@@ -1,0 +1,34 @@
+version: '3.8'
+
+services:
+  fastapi:
+    image: tiangolo/uvicorn-gunicorn-fastapi:python3.9
+    container_name: fastapi_app
+    volumes:
+      - .:/app
+    ports:
+      - "8000:80"
+    environment:
+      - MODULE_NAME=main
+      - VARIABLE_ENV=production
+      - MONGO_URI=mongodb://mongo:27018/data_tender
+
+
+  # Connexion MongoDB
+    depends_on:
+      - mongo  # S'assure que MongoDB démarre avant FastAPI
+    restart: always
+
+  mongo:
+    image: mongo:latest
+
+    container_name: mongo2
+    ports:
+      - "27018:27017"  # Expose MongoDB sur le port 27017
+    volumes:
+      - mongodb_data:/data_tender/all_tenders  # Stocke les données
+    environment:
+      - MONGO_INITDB_DATABASE=data_tender  # Nom de la base par défaut
+
+volumes:
+  mongodb_data:
