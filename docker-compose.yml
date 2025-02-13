@@ -1,0 +1,38 @@
+version: "3.8"
+services:
+  kib01-test:
+    image: kibana/kib
+    ports:
+      - "5601:5601"
+    networks:
+      - my-network
+
+  es01-test:
+    image: elasticsearch
+    ports:
+      - "9200:9200"
+      - "9300:9300"
+    networks:
+      - my-network
+
+  mongodb:
+    image: mongo
+    ports:
+      - "27017:27017"
+    networks:
+      - my-network
+
+  fastapi-app:
+    build: ./fastapi-app
+    ports:
+      - "8000:8000"
+    volumes:
+      - ./fastapi-app:/app
+    networks:
+      - my-network
+    depends_on:
+      - mongodb
+
+networks:
+  my-network:
+    driver: bridge
