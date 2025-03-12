@@ -1,0 +1,5 @@
+fastapi
+uvicorn
+motor
+pymongo
+jinja2

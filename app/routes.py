@@ -1,14 +1,16 @@
-from fastapi import APIRouter
+from fastapi import APIRouter,Request
 from motor.motor_asyncio import AsyncIOMotorClient
 from bson import ObjectId
+from fastapi.templating import Jinja2Templates
+
 
 router=APIRouter()
 
-client = AsyncIOMotorClient("mongodb://localhost:27017")
+client = AsyncIOMotorClient("mongodb://mongo-container:27017/")
 db = client["mynddatabase"]
 collection = db["tenders"]
 
-
+templates = Jinja2Templates(directory="templates")
 
 def id_to_string(mongo_objs):
     for mongo_obj in mongo_objs:
@@ -39,3 +41,7 @@ async def delete_item(item_id: str):
         return {"message": "Item deleted successfully"}
     else:
         return {"result":"fatal error #####"}
+
+@router.get("/dashboard")
+async def dashboard(request: Request):
+    return templates.TemplateResponse("index.html", {"request": request})
